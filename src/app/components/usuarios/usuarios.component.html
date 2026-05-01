@@ -1,0 +1,171 @@
+<div class="usuarios-container">
+
+  <!-- Header de página -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M20 21a8 8 0 1 0-16 0"/>
+        </svg>
+      </div>
+      <div>
+        <h2 class="page-title">Usuarios</h2>
+        <p class="page-subtitle">Administración de accesos al sistema</p>
+      </div>
+    </div>
+    <button class="btn-registrar" (click)="toggleForm()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Registrar Usuario
+    </button>
+  </div>
+
+  <!-- Tabla -->
+  <div class="table-wrapper">
+    <table class="hotel-table">
+      <thead>
+        <tr>
+          <th style="width:60px">#</th>
+          <th>Username</th>
+          <th>Roles</th>
+          <th style="width:220px">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let usuario of usuarios; let i = index">
+          <td class="td-num">{{ i + 1 }}</td>
+          <td class="td-username">
+            <div class="user-chip">
+              <div class="user-avatar">{{ usuario.username.charAt(0).toUpperCase() }}</div>
+              <span>{{ usuario.username }}</span>
+            </div>
+          </td>
+          <td>
+            <span *ngFor="let rol of usuario.roles" class="role-badge">
+              {{ transformarRol(rol) }}
+            </span>
+          </td>
+          <td class="td-actions">
+            <button class="btn-action edit" (click)="editarUsuario(usuario)" title="Editar">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+              Editar
+            </button>
+            <button class="btn-action delete" (click)="deleteUsuario(usuario.username)" title="Eliminar">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6M14 11v6"/>
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+              </svg>
+              Eliminar
+            </button>
+          </td>
+        </tr>
+
+        <!-- Empty state -->
+        <tr *ngIf="usuarios.length === 0">
+          <td colspan="4" class="empty-state">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+              <circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/>
+            </svg>
+            <span>No hay usuarios registrados</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── Modal Bootstrap (estructura intacta, solo CSS override) ── -->
+<div class="modal fade" #usuarioModalRef tabindex="-1" aria-labelledby="usuarioModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content hotel-modal">
+
+      <div class="modal-header hotel-modal-header">
+        <div class="modal-title-group">
+          <div class="modal-title-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/>
+            </svg>
+          </div>
+          <h5 class="modal-title" id="usuarioModalLabel">{{ textoModal }}</h5>
+        </div>
+        <button type="button" class="hotel-modal-close" data-bs-dismiss="modal" aria-label="Cerrar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body hotel-modal-body">
+        <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()">
+
+          <div class="hotel-field">
+            <label for="username" class="hotel-label">Username</label>
+            <div class="hotel-input-wrap">
+              <svg class="hotel-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/>
+              </svg>
+              <input id="username" class="hotel-input" formControlName="username"
+                     minlength="5" maxlength="20" placeholder="Nombre de usuario" autocomplete="off"/>
+            </div>
+            <div class="hotel-error" *ngIf="usuarioForm.get('username')?.invalid && usuarioForm.get('username')?.touched">
+              <span *ngIf="usuarioForm.get('username')?.errors?.['required']">El username es requerido</span>
+              <span *ngIf="usuarioForm.get('username')?.errors?.['minlength']">Mínimo 5 caracteres</span>
+              <span *ngIf="usuarioForm.get('username')?.errors?.['maxlength']">Máximo 20 caracteres</span>
+            </div>
+          </div>
+
+          <div class="hotel-field">
+            <label for="password" class="hotel-label">Contraseña</label>
+            <div class="hotel-input-wrap">
+              <svg class="hotel-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              <input id="password" type="password" class="hotel-input" formControlName="password"
+                     minlength="8" placeholder="Contraseña" autocomplete="new-password"/>
+            </div>
+            <div class="hotel-error" *ngIf="usuarioForm.get('password')?.invalid && usuarioForm.get('password')?.touched">
+              <span *ngIf="usuarioForm.get('password')?.errors?.['required']">La contraseña es requerida</span>
+              <span *ngIf="usuarioForm.get('password')?.errors?.['minlength']">Mínimo 8 caracteres</span>
+            </div>
+          </div>
+
+          <div class="hotel-field">
+            <label for="roles" class="hotel-label">Roles</label>
+            <select id="roles" class="hotel-select" formControlName="roles" multiple size="3">
+              <option *ngFor="let rol of roles" [value]="rol">{{ transformarRol(rol) }}</option>
+            </select>
+            <p class="hotel-hint">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              Ctrl (o Cmd en Mac) para seleccionar múltiples roles
+            </p>
+            <div class="hotel-error" *ngIf="usuarioForm.get('roles')?.invalid && usuarioForm.get('roles')?.touched">
+              <span *ngIf="usuarioForm.get('roles')?.errors?.['required']">Al menos un rol es requerido</span>
+            </div>
+          </div>
+
+          <div class="modal-footer-actions">
+            <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn-modal-save" [disabled]="usuarioForm.invalid">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+              </svg>
+              Guardar
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>

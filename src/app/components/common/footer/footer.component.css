@@ -1,0 +1,80 @@
+:host {
+  --bg-footer:  #0b0e15;
+  --border:     #1e2535;
+  --gold:       #c9a96e;
+  --text-muted: #3d4a5e;
+  --text-dim:   #5a6a82;
+}
+
+.hotel-footer {
+  background: var(--bg-footer);
+  font-family: 'Montserrat', sans-serif;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.footer-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.4;
+}
+
+.footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  gap: 1rem;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
+.footer-icon {
+  font-size: 1rem;
+}
+
+.footer-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  font-weight: 400;
+}
+
+.footer-copy {
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin: 0;
+  text-align: center;
+}
+
+.footer-modules {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.dot {
+  color: var(--gold);
+  opacity: 0.4;
+}
+
+@media (max-width: 768px) {
+  .footer-modules { display: none; }
+  .footer-inner { justify-content: center; flex-direction: column; gap: 0.2rem; }
+}
